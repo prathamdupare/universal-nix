@@ -51,7 +51,6 @@
     };
 
     flash.enable = true;
-    vim-be-good.enable = true;
     commentary.enable = true;
     snacks.enable = true;
 

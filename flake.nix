@@ -2,7 +2,9 @@
   description = "Pratham's Multi-OS Configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # Core OS Inputs
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    unstable.url = "github:NixOS/nixpkgs/nixos-unstable"; # Kept for your workflow
     
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -10,14 +12,36 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # --- Bring over your NixOS inputs ---
+    # Your Custom Inputs
     vicinae.url = "github:vicinaehq/vicinae";
-    nixvim.url = "github:nix-community/nixvim";
+    devenv.url = "github:cachix/devenv/latest";
+    android-nixpkgs.url = "github:tadfisher/android-nixpkgs/stable";
+    
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-snapd = {
+      url = "github:nix-community/nix-snapd";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hyprland.url = "github:hyprwm/hyprland?ref=v0.36.0";
-    # Add your other inputs (quickshell, rose-pine, etc.) here
+
+    rose-pine-hyprcursor = {
+      url = "github:ndom91/rose-pine-hyprcursor";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.hyprlang.follows = "hyprland/hyprlang";
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, ... }: {
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-snapd, ... }: {
     
     # -----------------------------------
     # 1. macOS Mac Mini
@@ -45,7 +69,7 @@
       specialArgs = { inherit inputs; };
       modules = [
         ./configuration.nix
-        inputs.nixvim.nixosModules.nixvim
+        inputs.nix-snapd.nixosModules.default # FIXED: Added back snapd module
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;

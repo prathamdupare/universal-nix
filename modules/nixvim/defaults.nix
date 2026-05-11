@@ -1,10 +1,10 @@
-# /etc/nixos/modules/nixvim.nix
 { config
 , pkgs
+, lib 
 , ...
 }: {
   imports = [
-    ./options.nix # Import the global options
+    ./options.nix
     ./keymaps.nix
     ./plugins.nix
   ];
@@ -15,7 +15,8 @@
     globals.mapleader = " ";
     clipboard = {
       providers = {
-        wl-copy.enable = true; # Wayland
+        # Only enable wl-copy if we are on Linux
+        wl-copy.enable = pkgs.stdenv.isLinux; 
       };
       register = "unnamedplus";
     };

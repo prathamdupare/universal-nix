@@ -15,12 +15,12 @@
 
   home.packages = with pkgs; [
     # Shared CLI tools
-    git tmux ripgrep fd lazygit bun nodejs_22 go gcc gnumake unzip yazi ghostty fastfetch vim
+    git tmux ripgrep fd lazygit bun nodejs_22 go gcc gnumake unzip yazi  fastfetch vim
     atool httpie lua yarn
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     # NixOS Only Tools
     wl-clipboard pavucontrol brightnessctl brave gimp yt-dlp nicotine-plus nautilus 
-    android-studio jdk17 blender mpv kitty foot xdg-desktop-portal-hyprland 
+    android-studio jdk17 blender mpv kitty foot xdg-desktop-portal-hyprland ghostty 
     waybar wofi swaybg mako pywal libnotify hyprlock hypridle bluetuith alsa-utils
   ];
 

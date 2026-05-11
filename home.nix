@@ -43,7 +43,7 @@
     };
   };
 
-  services.vicinae = {
+  services.vicinae = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     settings = {
       theme.name = "tokyo-night";

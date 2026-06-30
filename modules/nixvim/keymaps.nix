@@ -76,8 +76,12 @@
     # Telescope bindings
 
     {
-      action = "<cmd>Telescope live_grep<CR>";
+      mode = "n";
+      action = "<cmd>lua require('telescope.builtin').find_files({ cwd = vim.env.HOME })<CR>";
       key = "<leader>ff";
+      options = {
+        desc = "Find files (home dir)";
+      };
     }
     {
       action = "<cmd>Telescope find_files<CR>";

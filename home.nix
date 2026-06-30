@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, standalone ? false, ... }:
 
 {
   home.username = "pratham";
@@ -17,7 +17,7 @@
     # Shared CLI tools
     git tmux ripgrep fd lazygit bun nodejs_22 go gcc gnumake unzip yazi  fastfetch vim
     atool httpie lua yarn
-  ] ++ lib.optionals pkgs.stdenv.isLinux [
+  ] ++ lib.optionals (pkgs.stdenv.isLinux && !standalone) [
     # NixOS Only Tools
     wl-clipboard pavucontrol brightnessctl brave gimp yt-dlp nicotine-plus nautilus 
     android-studio jdk17 blender mpv kitty foot xdg-desktop-portal-hyprland ghostty 
@@ -32,7 +32,9 @@
     shellAliases = {
       ll = "ls -l";
       edit = "sudo -e";
-      update = if pkgs.stdenv.isDarwin 
+      update = if standalone
+               then "home-manager switch -b backup --flake .#pratham"
+               else if pkgs.stdenv.isDarwin 
                then "darwin-rebuild switch --flake .#Prathams-Mac-mini" 
                else "sudo nixos-rebuild switch --flake .#nixos";
     };
@@ -43,7 +45,7 @@
     };
   };
 
-  services.vicinae = lib.mkIf pkgs.stdenv.isLinux {
+  services.vicinae = lib.mkIf (pkgs.stdenv.isLinux && !standalone) {
     enable = true;
     settings = {
       theme.name = "tokyo-night";
@@ -55,7 +57,7 @@
     };
   };
 
-  services.mpd = lib.mkIf pkgs.stdenv.isLinux {
+  services.mpd = lib.mkIf (pkgs.stdenv.isLinux && !standalone) {
     enable = true;
     musicDirectory = "/home/pratham/Music";
     extraConfig = ''

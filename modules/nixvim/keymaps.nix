@@ -73,6 +73,134 @@
       key = "<leader>/";
     }
 
+    # Daily note (zen) — open/create today's markdown note in ~/git/notes
+    {
+      mode = "n";
+      key = "<leader>n";
+      action.__raw = ''
+        function()
+          local dir = vim.fn.expand("~/git/notes")
+          local date = os.date("%Y-%m-%d")
+          local path = dir .. "/" .. date .. ".md"
+          vim.fn.mkdir(dir, "p")
+          if vim.fn.filereadable(path) == 0 then
+            vim.fn.writefile({}, path)
+          end
+          local prev_buf = vim.api.nvim_get_current_buf()
+          vim.cmd("edit " .. vim.fn.fnameescape(path))
+          local note_buf = vim.api.nvim_get_current_buf()
+          if package.loaded["snacks"] and Snacks and Snacks.zen then
+            Snacks.zen({
+              on_close = function()
+                -- restore parent window to whatever was there before, drop the note buffer
+                if vim.api.nvim_buf_is_valid(prev_buf) then
+                  pcall(vim.api.nvim_win_set_buf, 0, prev_buf)
+                end
+                pcall(vim.cmd, "bdelete " .. note_buf)
+              end,
+            })
+          end
+        end
+      '';
+      options = {
+        desc = "Today's daily note (zen)";
+      };
+    }
+
+    # Canonical task list — open/create ~/git/notes/TODO.md in zen
+    {
+      mode = "n";
+      key = "<leader>t";
+      action.__raw = ''
+        function()
+          local dir = vim.fn.expand("~/git/notes")
+          local path = dir .. "/TODO.md"
+          vim.fn.mkdir(dir, "p")
+          if vim.fn.filereadable(path) == 0 then
+            vim.fn.writefile({ "# TODO", "", "- [ ] " }, path)
+          end
+          local prev_buf = vim.api.nvim_get_current_buf()
+          vim.cmd("edit " .. vim.fn.fnameescape(path))
+          local note_buf = vim.api.nvim_get_current_buf()
+          if package.loaded["snacks"] and Snacks and Snacks.zen then
+            Snacks.zen({
+              on_close = function()
+                if vim.api.nvim_buf_is_valid(prev_buf) then
+                  pcall(vim.api.nvim_win_set_buf, 0, prev_buf)
+                end
+                pcall(vim.cmd, "bdelete " .. note_buf)
+              end,
+            })
+          end
+        end
+      '';
+      options = {
+        desc = "Open TODO.md (zen)";
+      };
+    }
+
+    # Grep across the notes vault — type a query, or leave blank to browse all lines
+    {
+      mode = "n";
+      key = "<leader>ot";
+      action.__raw = ''
+        function()
+          require('telescope.builtin').live_grep({
+            cwd = vim.fn.expand("~/git/notes"),
+            additional_args = { "--fixed-strings" },
+          })
+        end
+      '';
+      options = {
+        desc = "Grep notes (blank = all)";
+      };
+    }
+
+    # Toggle checkbox on the current line: - [ ] <-> - [x]
+    {
+      mode = "n";
+      key = "<leader>x";
+      action.__raw = ''
+        function()
+          local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+          local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1] or ""
+          local new_line
+          if line:match("%- %[[ ]%]") then
+            new_line = line:gsub("%- %[[ ]%]", "- [x]", 1)
+          elseif line:match("%- %[[xX]%]") then
+            new_line = line:gsub("%- %[[xX]%]", "- [ ]", 1)
+          else
+            -- not a checkbox line — insert one before the content
+            new_line = line:gsub("^(%s*)", "%1- [ ] ", 1)
+          end
+          vim.api.nvim_buf_set_lines(0, row - 1, row, false, { new_line })
+        end
+      '';
+      options = {
+        desc = "Toggle checkbox";
+      };
+    }
+
+    # Grep across the notes vault
+    {
+      mode = "n";
+      key = "<leader>og";
+      action = "<cmd>lua require('telescope.builtin').live_grep({ cwd = vim.fn.expand('~/git/notes') })<CR>";
+      options = {
+        desc = "Grep notes";
+      };
+    }
+
+    # Find files in the notes vault
+    {
+      mode = "n";
+      key = "<leader>of";
+      action = "<cmd>lua require('telescope.builtin').find_files({ cwd = vim.fn.expand('~/git/notes') })<CR>";
+      options = {
+        desc = "Find notes";
+      };
+    }
+
     # Telescope bindings
 
     {

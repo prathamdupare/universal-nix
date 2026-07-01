@@ -38,6 +38,9 @@
                then "darwin-rebuild switch --flake .#Prathams-Mac-mini" 
                else "sudo nixos-rebuild switch --flake .#nixos";
     };
+    envExtra = ''
+      export PATH=/home/pratham/.opencode/bin:$PATH
+    '';
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";

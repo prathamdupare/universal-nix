@@ -14,7 +14,7 @@
     which-key.enable = true;
     gitsigns.enable = true;
     web-devicons.enable = true;
-    dashboard.enable = true;
+    dashboard.enable = false; # using snacks.dashboard instead
 
     # ── Navigation / UI ──────────────────────────────────
     telescope.enable = true;
@@ -59,7 +59,62 @@
 
     flash.enable = true;
     commentary.enable = true;
-    snacks.enable = true;
+    snacks = {
+      enable = true;
+      settings = {
+        bigfile.enabled = true;
+        notifier.enabled = true;
+        quickfile.enabled = true;
+        statuscolumn.enabled = true;
+        words.enabled = true;
+
+        dashboard = {
+          enabled = true;
+          change_to_vcs_root = true;
+
+          sections = [
+            {
+              section = "header";
+              header = [
+                "███╗   ██╗██╗██╗  ██╗██╗   ██╗██╗███╗   ███╗"
+                "████╗  ██║██║╚██╗██╔╝██║   ██║██║████╗ ████║"
+                "██╔██╗ ██║██║ ╚███╔╝ ██║   ██║██║██╔████╔██║"
+                "██║╚██╗██║██║ ██╔██╗ ╚██╗ ██╔╝██║██║╚██╔╝██║"
+                "██║ ╚████║██║██╔╝ ██╗ ╚████╔╝ ██║██║ ╚═╝ ██║"
+                "╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝     ╚═╝"
+              ];
+              align = "center";
+              padding = 1;
+            }
+            {
+              section = "keys";
+              gap = 1;
+              padding = 1;
+              items = [
+                { icon = " "; key = "f"; desc = "Find File"; action = ":lua Snacks.dashboard.pick('files')"; }
+                { icon = " "; key = "n"; desc = "New File"; action = ":ene | startinsert"; }
+                { icon = " "; key = "g"; desc = "Find Text"; action = ":lua Snacks.dashboard.pick('live_grep')"; }
+                { icon = " "; key = "r"; desc = "Recent Files"; action = ":lua Snacks.dashboard.pick('oldfiles')"; }
+                { icon = " "; key = "p"; desc = "Projects"; action = ":lua Snacks.dashboard.pick('projects')"; }
+                { icon = " "; key = "l"; desc = "Lazygit"; action = ":LazyGit"; }
+                { icon = " "; key = "e"; desc = "Neo-tree"; action = ":Neotree focus"; }
+                { icon = " "; key = "q"; desc = "Quit"; action = ":qa"; }
+              ];
+            }
+            {
+              section = "projects";
+              limit = 2;
+              padding = 1;
+            }
+            {
+              section = "recent_files";
+              limit = 4;
+              padding = 1;
+            }
+            ];
+        };
+      };
+    };
 
     render-markdown.enable = true;
     emmet.enable = true;

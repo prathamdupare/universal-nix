@@ -71,5 +71,22 @@
     '';
   };
 
+  # Hourly reminder (9am-9pm) to check tasks/notes via notify-send
+  systemd.user.services.notes-reminder = lib.mkIf (pkgs.stdenv.isLinux && !standalone) {
+    Unit = { Description = "Notes & tasks reminder"; };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.libnotify}/bin/notify-send --icon=task-due --urgency=normal 'Tasks reminder' 'Check your notes ~/git/notes/TODO.md'";
+    };
+  };
+  systemd.user.timers.notes-reminder = lib.mkIf (pkgs.stdenv.isLinux && !standalone) {
+    Unit.Description = "Hourly notes/tasks reminder (9am-9pm)";
+    Timer = {
+      OnCalendar = "*-*-* 09..21:00:00";
+      Persistent = true;
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
+
   home.stateVersion = "25.11";
 }

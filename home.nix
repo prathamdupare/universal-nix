@@ -72,14 +72,14 @@
   };
 
   # Hourly reminder (9am-9pm) to check tasks/notes via notify-send
-  systemd.user.services.notes-reminder = lib.mkIf (pkgs.stdenv.isLinux && !standalone) {
+  systemd.user.services.notes-reminder = lib.mkIf pkgs.stdenv.isLinux {
     Unit = { Description = "Notes & tasks reminder"; };
     Service = {
       Type = "oneshot";
       ExecStart = "${pkgs.libnotify}/bin/notify-send --icon=task-due --urgency=normal 'Tasks reminder' 'Check your notes ~/git/notes/TODO.md'";
     };
   };
-  systemd.user.timers.notes-reminder = lib.mkIf (pkgs.stdenv.isLinux && !standalone) {
+  systemd.user.timers.notes-reminder = lib.mkIf pkgs.stdenv.isLinux {
     Unit.Description = "Hourly notes/tasks reminder (9am-9pm)";
     Timer = {
       OnCalendar = "*-*-* 09..21:00:00";

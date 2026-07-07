@@ -24,6 +24,12 @@
     waybar wofi swaybg mako pywal libnotify hyprlock hypridle bluetuith alsa-utils
   ];
 
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    options = [ "--cmd=cd" ];
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
